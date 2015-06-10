@@ -1,0 +1,3 @@
+[localhost]
+localhost ansible_connection=local
+ansible_python_interpreter=/home/nb/ansible-1.8.2/bin/python

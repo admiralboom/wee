@@ -1,0 +1,53 @@
+---
+- name: Create a Rackspace Cloud Server
+  hosts: localhost
+  user: root
+  connection: local
+  gather_facts: False
+
+  vars:
+   # this is the name we will see in the Rackspace Cloud control panel, and 
+   # this will also be the hostname of our new server
+   - name: admin.digitalboy.net
+   # the flavor specifies the server side of our instance
+   - flavor: performance1-1
+   # the image specifies the linux distro we will use for our server
+   # note: this image UUID is for Ubuntu 14.10 PVHVM
+   - image: 0766e5df-d60a-4100-ae8c-07f27ec0148f
+   # the region is the Rackspace Cloud region we want to build our server in
+   - region: DFW
+   # credentials specifies the location of our pyrax configuration file we created earlier
+   - credentials: /home/nb/.rackspace_cloud
+   # I like to drop in my SSH pub key automatically when I create the server
+   # so that I can ssh in without a password
+   # Note: Instead of dropping in a file, you can use a stored Rackspace key
+   # when you build the server by editing key_name below to your key's name.
+   - files:
+        /root/.ssh/authorized_keys: /Users/nb/.ssh/turbo.key
+
+  tasks:
+    - name: Rackspace cloud server build request
+      local_action:
+        module: rax
+        credentials: "{{ credentials }}"
+        name: "{{ name }}"
+        flavor: "{{ flavor }}"
+        image: "{{ image }}"
+        region: "{{ region }}"
+        # key_name - specifies the Rackspace cloud key to add to the server upon creation
+        #key_name: my_rackspace_key
+        files: "{{ files }}"
+        # wait - specifies that we should wait until the server is fully created before proceeding
+        wait: yes
+        # state - present means we want our server to exist
+        state: present
+        # specify that we want both a public network (public IPv4) and
+        # a private network (10. aka service net)
+        networks:
+          - private
+          - public
+        # group - specifies metadata to add to the new server with a server group
+        #group: deploy
+      # register is an ansible term to save the output in to a variable named rax
+      register: rax
+

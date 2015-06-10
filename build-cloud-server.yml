@@ -1,0 +1,41 @@
+---
+- name: Create a Rackspace Cloud Server
+  hosts: localhost
+  user: root
+  connection: local
+  gather_facts: True
+
+  vars:
+   - name: wee.nathancblack.com
+   - flavor: performance1-1
+   - image: f211a88e-4cc0-4660-bda1-56495b05cda2
+   - region: DFW
+   - credentials: /home/nb/.rackspace_cloud
+   - domain: nathancblack.com
+   - files:
+        /root/.ssh/authorized_keys: /home/nb/.ssh/turbo.key.pub
+
+  tasks:
+    - name: Rackspace cloud server build request
+      local_action:
+        module: rax
+        credentials: "{{ credentials }}"
+        name: "{{ name }}"
+        flavor: "{{ flavor }}"
+        image: "{{ image }}"
+        region: "{{ region }}"
+        files: "{{ files }}"
+        wait: yes
+        state: absent
+        networks:
+          - private
+          - public
+      register: rax
+    - name: Add new cloud server to host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.name }}"
+        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+        ansible_ssh_user: root
+        groupname: deploy
+      with_items: rax.instances
