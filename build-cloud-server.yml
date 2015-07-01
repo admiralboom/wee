@@ -6,11 +6,11 @@
   gather_facts: True
 
   vars:
-   - name: wee.nathancblack.com
+   - name: wee-n01.nathancblack.com
    - flavor: performance1-1
    - image: f211a88e-4cc0-4660-bda1-56495b05cda2
    - region: DFW
-   - credentials: /home/nb/.rackspace_cloud
+   - credentials: .rackspace_cloud
    - domain: nathancblack.com
    - files:
         /root/.ssh/authorized_keys: /home/nb/.ssh/turbo.key.pub
@@ -26,7 +26,7 @@
         region: "{{ region }}"
         files: "{{ files }}"
         wait: yes
-        state: absent
+        state: present
         networks:
           - private
           - public

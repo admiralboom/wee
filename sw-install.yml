@@ -1,0 +1,41 @@
+---
+- name: Create a Rackspace Cloud Server
+  hosts: wee2
+  gather_facts: True
+
+  tasks:
+   - name: update all packages
+     apt: update_cache=yes upgrade=yes
+   - name: Install zee packagez
+     apt: name={{item}} state=installed update_cache=yes cache_valid_time=50
+     with_items:
+             - pandoc
+             - haskell-platform
+               #python stuffs
+             - python-virtualenv
+             - python
+             - python-setuptools
+             - python-dev
+             - gcc
+             - python-pip
+               #utils
+             - git
+             - git-man
+             - telnet
+             - lynx
+             - curl
+             - sysstat
+             - lsof
+             - dnsutils
+             - whois
+             - screen
+             - tcpdump
+               #weechat
+             - weechat-core
+             - weechat-scripts
+             - weechat-plugins
+             - weechat-doc
+             - weechat-curses
+   - name: add user
+     user: name=nb state=present shell=/bin/bash groups=sudo generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
+   - authorized_key: user=nb key="{{ lookup('file', '/home/nb/.ssh/id_rsa.pub') }}"

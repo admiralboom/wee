@@ -1,0 +1,2 @@
+[wee]
+wee2 ansible_ssh_port=443 ansible_ssh_host=104.130.141.225 ansible_ssh_user=root ansible_ssh_private_key_file=/home/nb/.ssh/turbo.key
