@@ -6,10 +6,10 @@
   gather_facts: True
 
   vars:
-   - name: wee-n01.nathancblack.com
+   - name: wee-n02.nathancblack.com
    - flavor: performance1-1
    - image: f211a88e-4cc0-4660-bda1-56495b05cda2
-   - region: DFW
+   - region: IAD
    - credentials: .rackspace_cloud
    - domain: nathancblack.com
    - files:
@@ -37,5 +37,5 @@
         hostname: "{{ item.name }}"
         ansible_ssh_host: "{{ item.rax_accessipv4 }}"
         ansible_ssh_user: root
-        groupname: deploy
+        groupname: irc
       with_items: rax.instances
