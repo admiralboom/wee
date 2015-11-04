@@ -4,41 +4,70 @@
   gather_facts: True
 
   tasks:
-   - name: update all packages
-     apt: update_cache=yes upgrade=yes
-   - name: Install zee packagez
-     apt: name={{item}} state=installed update_cache=yes cache_valid_time=50
-     with_items:
-             - pandoc
-             - haskell-platform
-               #python stuffs
-             - python-virtualenv
-             - python
-             - python-setuptools
-             - python-dev
-             - gcc
-             - python-pip
-               #utils
-             - ntp
-             - ntpdate
-               #- openntpd
-             - git
-             - git-man
-             - telnet
-             - lynx
-             - curl
-             - sysstat
-             - lsof
-             - dnsutils
-             - whois
-             - screen
-             - tcpdump
-               #weechat
-             - weechat-core
-             - weechat-scripts
-             - weechat-plugins
-             - weechat-doc
-             - weechat-curses
-   - name: add user
-     user: name=nb state=present shell=/bin/bash groups=sudo generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
-   - authorized_key: user=nb key="{{ lookup('file', '/home/nb/.ssh/id_rsa.pub') }}"
+  - name: update all packages
+    apt: update_cache=yes upgrade=yes
+  - name: Install zee packagez
+    apt: name={{item}} state=installed update_cache=yes cache_valid_time=50
+    with_items:
+      - pandoc
+      - haskell-platform
+      #python stuffs
+      - python-virtualenv
+      - python
+      - python-setuptools
+      - python-dev
+      - gcc
+      - python-pip
+        #utils
+      - ntp
+      - ntpdate
+        #- openntpd
+      - git
+      - git-man
+      - telnet
+      - lynx
+      - curl
+      - sysstat
+      - lsof
+      - dnsutils
+      - whois
+      - screen
+      - tcpdump
+        #weechat
+      - weechat-core
+      - weechat-scripts
+      - weechat-plugins
+      - weechat-doc
+      - weechat-curses
+
+  - name: Install fail2ban
+    action: apt pkg=fail2ban state=installed
+
+  - name: Install unattended-upgrades
+    action: apt pkg=unattended-upgrades state=present
+  
+  - name: Adjust APT update intervals
+    action: copy src=config/apt_periodic dest=/etc/apt/apt.conf.d/10periodic
+
+  - name: Make sure unattended-upgrades only installs from $ubuntu_release-security
+    action: lineinfile dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="$ubuntu_release-updates" state=absent
+
+  - name: Copy debconf selections so that Postfix can configure itself non-interactively
+    copy: src=config/postfix_selections  dest=/tmp/postfix_selections
+
+  - name: Set up Postfix to relay mail
+    action: command debconf-set-selections /tmp/postfix_selections
+
+  - name: Install logwatch
+    action: apt pkg=logwatch state=installed
+
+  - name: Make logwatch mail $logwatch_email daily
+    action: lineinfile dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto $logwatch_email --detail high" state=present create=yes
+
+  handlers:
+  - name: Restart sshd
+    action: service name=sshd state=restarted
+
+  - name: add user
+    user: name=nb state=present shell=/bin/bash groups=sudo generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
+  - authorized_key: user=nb key="{{ lookup('file', '/home/nb/.ssh/id_rsa.pub') }}"

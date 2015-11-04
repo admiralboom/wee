@@ -1,0 +1,2 @@
+postfix/mailname string wee-n03.nathancblack.com
+postfix/main_mailer_type string 'IRC_node'
