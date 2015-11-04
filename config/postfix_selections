@@ -1,2 +1,2 @@
-postfix/mailname string wee-n03.nathancblack.com
-postfix/main_mailer_type string 'IRC_node'
+postfix postfix/mailname string "wee-n02.nathancblack.com"
+postfix postfix/main_mailer_type string 'IRC_node'

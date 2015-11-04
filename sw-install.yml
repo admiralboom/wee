@@ -2,6 +2,9 @@
 - name: Create a Rackspace Cloud Server
   hosts: wee3
   gather_facts: True
+  vars:
+  - ubuntu_release: wheezy
+  - logwatch_email: nathan@digitalboy.net
 
   tasks:
   - name: update all packages
@@ -40,12 +43,21 @@
       - weechat-doc
       - weechat-curses
 
+  - name: Remove sudo group rights
+    action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
+
+  - name: Add deploy user to sudoers
+    action: lineinfile dest=/etc/sudoers regexp="nb ALL" line="nb ALL=(ALL) ALL" state=present
+
   - name: Install fail2ban
     action: apt pkg=fail2ban state=installed
 
   - name: Install unattended-upgrades
     action: apt pkg=unattended-upgrades state=present
-  
+
+  - name: Install Postfix
+    action: apt pkg=postfix state=present
+
   - name: Adjust APT update intervals
     action: copy src=config/apt_periodic dest=/etc/apt/apt.conf.d/10periodic
 
