@@ -1,0 +1,30 @@
+# apt from galaxy - https://galaxy.ansible.com/list#/roles/430
+- src: lxhunter.apt
+  path: playbooks/roles/
+  name: galaxy_apt
+  version: v2.1.0
+
+# sudo from galaxy - https://galaxy.ansible.com/list#/roles/61
+- src: mivok0.sudo
+  path: playbooks/roles/
+  name: galaxy_sudo
+
+# ntp from galaxy - https://galaxy.ansible.com/detail#/role/4
+- src : bennojoy.ntp
+  path: playbooks/roles/
+  name: galaxy_ntp
+
+# java8-oracle - https://galaxy.ansible.com/detail#/role/1393
+- src: malk.java8-oracle
+  path: playbooks/roles
+  name: galaxy_java8
+
+# SSHD from galaxy - https://galaxy.ansible.com/detail#/role/2488
+- src: willshersystems.sshd
+  path: playbooks/roles/
+  name: galaxy_sshd
+      #
+# SSHD from galaxy - https://galaxy.ansible.com/detail#/role/2488
+- src: resmo.sshd
+  path: playbooks/roles/
+  name: galaxy_rsshd
