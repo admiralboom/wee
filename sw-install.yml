@@ -1,6 +1,7 @@
 ---
 - name: Create a Rackspace Cloud Server
   hosts: all
+  any_errors_fatal: true
   gather_facts: True
   remote_user: root
 #  roles:
@@ -9,7 +10,7 @@
   - ubuntu_release: wheezy
   - logwatch_email: nathan@digitalboy.net
   - sshd_port: 443
-  - sshd_listen_address: 443
+  - sshd_listen_addresses: [0.0.0.0]
   - sshd_pkg_name: openssh-server
   - sshd_config_basedir: /etc/ssh
   - sshd_service_name: ssh
@@ -99,8 +100,11 @@
   - name: Install logwatch
     action: apt pkg=logwatch state=installed
 
-  - name: Make logwatch mail $logwatch_email daily
-    action: lineinfile dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto $logwatch_email --detail high" state=present create=yes
+  - name: Make logwatch mail {{ logwatch_email }} daily
+    action: lineinfile dest=/etc/cron.daily/00logwatch
+        regexp="^/usr/sbin/logwatch"
+        line="/usr/sbin/logwatch --output mail --mailto {{ logwatch_email }} --detail high"
+        state=present create=yes
 
   handlers:
   - name: restart sshd
