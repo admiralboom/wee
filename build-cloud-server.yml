@@ -16,26 +16,26 @@
         /root/.ssh/authorized_keys: /home/nb/.ssh/turbo.key.pub
 
   tasks:
-    - name: Rackspace cloud server build request
-      local_action:
-        module: rax
-        credentials: "{{ credentials }}"
-        name: "{{ name }}"
-        flavor: "{{ flavor }}"
-        image: "{{ image }}"
-        region: "{{ region }}"
-        files: "{{ files }}"
-        wait: yes
-        state: present
-        networks:
-          - private
-          - public
-      register: rax
-    - name: Add new cloud server to host group
-      local_action:
-        module: add_host
-        hostname: "{{ item.name }}"
-        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
-        ansible_ssh_user: root
-        groupname: irc
-      with_items: rax.instances
+     - name: Rackspace cloud server build request
+       local_action:
+         module: rax
+         credentials: "{{ credentials }}"
+         name: "{{ name }}"
+         flavor: "{{ flavor }}"
+         image: "{{ image }}"
+         region: "{{ region }}"
+         files: "{{ files }}"
+         wait: yes
+         state: present
+         networks:
+           - private
+           - public
+       register: rax
+     - name: Add new cloud server to host group
+       local_action:
+         module: add_host
+         hostname: "{{ item.name }}"
+         ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+         ansible_ssh_user: root
+         groupname: irc
+       with_items: rax.instances

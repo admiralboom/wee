@@ -20,7 +20,6 @@
   - sshd_pkg_state: installed
   - sshd_permit_root_login: 'yes'
   - sshd_host_keys: []
-  - sshd_listen_addresses: []
   - sshd_password_authentication: 'yes'
   - sshd_print_motd: 'yes'
 
