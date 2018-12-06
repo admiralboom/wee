@@ -68,6 +68,7 @@
          dest=/etc/ssh/sshd_config
          owner=root group=root mode=0644
          validate="/usr/sbin/sshd -t -f %s"
+         backup=yes
          notify: restart sshd
 
      - name: Install zee packagez
